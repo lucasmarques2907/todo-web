@@ -1,0 +1,29 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+    inputs:
+      target-branch:
+        description: "Branch para rodar os testes"
+        required: true
+        default: "main"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: composer install
+      - name: Create SQLite database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+      - name: Run migrations
+        run: php artisan migrate --database=sqlite
+      - name: Run tests
+        run: php artisan test
