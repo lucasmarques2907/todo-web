@@ -5,9 +5,10 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="Unit">
+    <!--! Habilitar testsuite caso precise de testes unitários -->
+        <!-- <testsuite name="Unit">
             <directory>tests/Unit</directory>
-        </testsuite>
+        </testsuite> -->
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
