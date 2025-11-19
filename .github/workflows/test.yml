@@ -1,0 +1,35 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+    inputs:
+      target-branch:
+        description: "Branch para rodar os testes"
+        required: true
+        default: "main"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      - name: Create SQLite database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+      - name: Create .env file and generate app key
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+      - name: Run migrations
+        run: php artisan migrate --database=sqlite
+        env:
+          APP_ENV: testing
+      - name: Run tests
+        run: ./vendor/bin/pest --ci -v --stop-on-failure
