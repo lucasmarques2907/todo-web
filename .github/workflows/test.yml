@@ -18,7 +18,7 @@ jobs:
       - name: Get code
         uses: actions/checkout@v5
       - name: Install dependencies
-        run: composer install
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Create SQLite database
         run: |
           mkdir -p database
@@ -28,4 +28,4 @@ jobs:
         env:
           APP_ENV: testing
       - name: Run tests
-        run: php artisan test
+        run: ./vendor/bin/pest --ci
