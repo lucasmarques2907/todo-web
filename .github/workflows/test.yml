@@ -18,12 +18,18 @@ jobs:
       - name: Get code
         uses: actions/checkout@v5
       - name: Install dependencies
-        run: composer install
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Create SQLite database
         run: |
           mkdir -p database
           touch database/database.sqlite
+      - name: Create .env file and generate app key
+        run: |
+          cp .env.example .env
+          php artisan key:generate
       - name: Run migrations
         run: php artisan migrate --database=sqlite
+        env:
+          APP_ENV: testing
       - name: Run tests
-        run: php artisan test
+        run: ./vendor/bin/pest --ci -v --stop-on-failure
